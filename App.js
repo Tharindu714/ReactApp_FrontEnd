@@ -14,16 +14,21 @@ import { Alert } from "react-native";
 import { Image } from "expo-image";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import * as ImagePicker from "expo-image-picker";
+import { registerRootComponent } from "expo";
 
 const MainImagePath = require("./assets/images/logo2.png");
 const backgroundImage = require("./assets/images/background.jpg");
 const addImage = require("./assets/images/camera.png");
-const blurhash ='LGF5?xYk^6#M@-5c,1J5@[or[Q6.';
+const blurhash = "LGF5?xYk^6#M@-5c,1J5@[or[Q6.";
 
 SplashScreen.preventAutoHideAsync();
 
 export default function App() {
   const [getImage, setImage] = useState(null);
+  const [getMobile, setMobile] = useState("");
+  const [getFirstName, setFirstName] = useState("");
+  const [getLastName, setLastName] = useState("");
+  const [getPassword, setPassword] = useState("");
 
   const [loaded, error] = useFonts({
     "Montserrat-Bold": require("./assets/fonts/Montserrat-Bold.ttf"),
@@ -71,29 +76,79 @@ export default function App() {
               placeholder={{ blurhash }}
               contentFit={"cover"}
             />
-
           </Pressable>
 
           <Text style={Stylesheet.text2}>Mobile Number</Text>
-          <TextInput style={Stylesheet.input1} inputMode={"tel"} />
+          <TextInput
+            style={Stylesheet.input1}
+            inputMode={"tel"}
+            maxLength={10}
+            onChangeText={(text) => {
+              setMobile(text);
+            }}
+          />
 
           <Text style={Stylesheet.text2}>First Name</Text>
-          <TextInput style={Stylesheet.input1} inputMode={"text"} />
+          <TextInput
+            style={Stylesheet.input1}
+            inputMode={"text"}
+            onChangeText={(text) => {
+              setFirstName(text);
+            }}
+          />
 
           <Text style={Stylesheet.text2}>Last Name</Text>
-          <TextInput style={Stylesheet.input1} inputMode={"text"} />
+          <TextInput
+            style={Stylesheet.input1}
+            inputMode={"text"}
+            onChangeText={(text) => {
+              setLastName(text);
+            }}
+          />
 
           <Text style={Stylesheet.text2}>Password</Text>
           <TextInput
             style={Stylesheet.input1}
             secureTextEntry={true}
             inputMode={"text"}
+            onChangeText={(text) => {
+              setPassword(text);
+            }}
           />
 
           <Pressable
             style={Stylesheet.pressable1}
-            onPress={() => {
-              Alert.alert("Testing", "SignUp");
+            onPress={async () => {
+              let formData = new FormData();
+
+              formData.append("mobile", getMobile);
+              formData.append("firstName", getFirstName);
+              formData.append("lastName", getLastName);
+              formData.append("password", getPassword);
+              if (getImage != null) {
+                formData.append("avatarImage", {
+                  name: "avatar.png",
+                  type: "image/png",
+                  uri: getImage,
+                });
+              }
+
+              let response = await fetch(
+                "https://c9d4-112-134-136-247.ngrok-free.app/Chanaka_Electronics_Chat/SignUp",
+                {
+                  method: "POST",
+                  body: formData,
+                }
+              );
+              if (response.ok) {
+                let json = await response.json();
+                if (json.success) {
+                  //user Registration Complete
+                  Alert.alert("Success", json.message);
+                } else {
+                  Alert.alert("Error", json.message);
+                }
+              }
             }}
           >
             <FontAwesome6 name={"right-to-bracket"} size={18} color={"white"} />

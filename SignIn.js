@@ -1,25 +1,29 @@
 import * as SplashScreen from "expo-splash-screen";
 import { useFonts } from "expo-font";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   View,
   Text,
   TextInput,
   StyleSheet,
-  Button,
   ImageBackground,
 } from "react-native";
-import { Pressable } from "react-native";
+import { Pressable, ScrollView } from "react-native";
 import { Alert } from "react-native";
 import { Image } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { registerRootComponent } from "expo";
+import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 
 const MainImagePath = require("./assets/images/logo2.png");
 const backgroundImage = require("./assets/images/background.jpg");
 
 SplashScreen.preventAutoHideAsync();
 
-export function SignIn() {
+function SignIn() {
+  const [getName, setName] = useState(null);
+  const [getMobile, setMobile] = useState("");
+  const [getPassword, setPassword] = useState("");
   const [loaded, error] = useFonts({
     "Montserrat-Bold": require("./assets/fonts/Montserrat-Bold.ttf"),
     "Montserrat-Light": require("./assets/fonts/Montserrat-Light.ttf"),
@@ -38,44 +42,108 @@ export function SignIn() {
     return null;
   }
   return (
-    <View style={Stylesheet.view1}>
-      <ImageBackground
-        source={backgroundImage}
-        resizeMode="cover"
-        style={Stylesheet.backgroundimage}
-      >
-        <Image source={MainImagePath} style={Stylesheet.mainimage} />
-        <Text style={Stylesheet.text1}>Sign In</Text>
-        <Text style={Stylesheet.text2}>Welcome to Chanaka Electronics Chat Hub</Text>
-        <Text style={Stylesheet.text3}>
-          Please Fill your Details to Continue
-        </Text>
+    <ImageBackground
+      source={backgroundImage}
+      resizeMode="cover"
+      style={Stylesheet.backgroundimage}
+    >
+      <ScrollView>
+        <View style={Stylesheet.view1}>
+          <Image source={MainImagePath} style={Stylesheet.mainimage} />
+          <Text style={Stylesheet.text1}>Sign In</Text>
+          <Text style={Stylesheet.text2}>
+            Welcome to Chanaka Electronics Chat Hub
+          </Text>
+          <Text style={Stylesheet.text3}>
+            Please Fill your Details to Continue
+          </Text>
 
-        <Text style={Stylesheet.text2}>Mobile Number</Text>
-        <TextInput style={Stylesheet.input1} inputMode={"tel"} />
+          <View style={Stylesheet.avatar}>
+            <Text style={Stylesheet.text5}>{getName}</Text>
+          </View>
+          <Text style={Stylesheet.text2}>Mobile Number</Text>
+          <TextInput
+            style={Stylesheet.input1}
+            inputMode={"tel"}
+            maxLength={10}
+            onChangeText={(text) => {
+              setMobile(text);
+            }}
+            onEndEditing={async () => {
+              if (getMobile.length == 10) {
+                let response = await fetch(
+                  "https://c9d4-112-134-136-247.ngrok-free.app/Chanaka_Electronics_Chat/GetName?mobile=" +
+                    getMobile
+                );
+                if (response.ok) {
+                  let json = await response.json();
+                  setName(json.letters);
+                }
+              }
+            }}
+          />
 
-        <Text style={Stylesheet.text2}>Password</Text>
-        <TextInput style={Stylesheet.input1} secureTextEntry={true} />
+          <Text style={Stylesheet.text2}>Password</Text>
+          <TextInput
+            style={Stylesheet.input1}
+            secureTextEntry={true}
+            inputMode={"text"}
+            onChangeText={(text) => {
+              setPassword(text);
+            }}
+          />
 
-        <Pressable
-          style={Stylesheet.pressable1}
-          onPress={() => {
-            Alert.alert("Testing", "Success");
-          }}
-        >
-          <FontAwesome name={"paper-plane"} size={18} color={"white"} />
-          <Text style={Stylesheet.text4}>Sign In Here</Text>
-        </Pressable>
-      </ImageBackground>
-    </View>
+          <Pressable
+            style={Stylesheet.pressable1}
+            onPress={async () => {
+              let formData = new FormData();
+
+              formData.append("mobile", getMobile);
+              formData.append("password", getPassword);
+
+              let response = await fetch(
+                "https://c9d4-112-134-136-247.ngrok-free.app/Chanaka_Electronics_Chat/SignIn",
+                {
+                  method: "POST",
+                  body: formData,
+                }
+              );
+              if (response.ok) {
+                let json = await response.json();
+                if (json.success) {
+                  //user Registration Complete
+                  Alert.alert("Success", json.message);
+                } else {
+                  Alert.alert("Error", json.message);
+                }
+              }
+            }}
+          >
+            <FontAwesome6 name={"right-to-bracket"} size={18} color={"white"} />
+            <Text style={Stylesheet.text4}>Sign In Here</Text>
+          </Pressable>
+
+          <Pressable
+            style={Stylesheet.pressable2}
+            onPress={() => {
+              Alert.alert("Testing", "SignUp");
+            }}
+          >
+            <Text style={Stylesheet.text3}>New Member? Create an Account</Text>
+          </Pressable>
+        </View>
+      </ScrollView>
+    </ImageBackground>
   );
 }
 
+registerRootComponent(SignIn);
+
 const Stylesheet = StyleSheet.create({
   view1: {
-    flex: 1,
     rowGap: 13,
     justifyContent: "center",
+    paddingHorizontal: 10,
   },
 
   text1: {
@@ -93,15 +161,23 @@ const Stylesheet = StyleSheet.create({
   },
 
   text3: {
-    fontSize: 18,
+    fontSize: 14,
     color: "#007FFF",
     fontFamily: "Montserrat-SemiBold",
   },
 
   text4: {
-    fontSize: 20,
+    fontSize: 18,
     fontFamily: "Montserrat-Bold",
     color: "white",
+  },
+
+  text5: {
+    fontSize: 25,
+    fontFamily: "Montserrat-Bold",
+    color: "#007FFF",
+    alignSelf:"center",
+    justifyContent: "center"
   },
 
   input1: {
@@ -119,13 +195,13 @@ const Stylesheet = StyleSheet.create({
   backgroundimage: {
     flex: 1,
     rowGap: 13,
-    paddingHorizontal: 25,
+    paddingHorizontal: 10,
     justifyContent: "center",
   },
 
   pressable1: {
     backgroundColor: "#007FFF",
-    height: 50,
+    height: 40,
     borderRadius: 12,
     marginTop: 10,
     justifyContent: "center",
@@ -134,10 +210,32 @@ const Stylesheet = StyleSheet.create({
     columnGap: 10,
   },
 
+  pressable2: {
+    backgroundColor: "black",
+    height: 32,
+    borderRadius: 12,
+    marginTop: 5,
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "row",
+    columnGap: 8,
+  },
+
   mainimage: {
     alignSelf: "center",
-    marginBottom: 10,
+    marginBottom: 7,
+    marginTop: 40,
     height: 175,
     width: 300,
+  },
+
+  avatar: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    justifyContent: "center",
+    backgroundColor: "white",
+    alignSelf: "center",
+    marginTop: 5,
   },
 });

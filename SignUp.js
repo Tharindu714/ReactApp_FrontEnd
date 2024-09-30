@@ -14,15 +14,17 @@ import {
 import { Image } from "expo-image";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import * as ImagePicker from "expo-image-picker";
+import { registerRootComponent } from "expo";
+
 
 const MainImagePath = require("./assets/images/logo2.png");
 const backgroundImage = require("./assets/images/background.jpg");
 const addImage = require("./assets/images/camera.png");
-const blurhash = "LGF5?xYk^6#M@-5c,1J5@[or[Q6.";
+const blurhash = "L02FMz00=eyGLNmi%5Fy4,^TB=zm";
 
 SplashScreen.preventAutoHideAsync();
 
-export default function App() {
+function SignUp() {
   const [getImage, setImage] = useState(null);
   const [getMobile, setMobile] = useState("");
   const [getFirstName, setFirstName] = useState("");
@@ -56,9 +58,9 @@ export default function App() {
       <ScrollView>
         <View style={Stylesheet.view1}>
           <Image source={MainImagePath} style={Stylesheet.mainimage} />
-          <Text style={Stylesheet.text1}>Create a new account</Text>
+          <Text style={Stylesheet.text1}>Get Started Now </Text>
           <Text style={Stylesheet.text2}>
-            Join with Us & Let's Start the Conversation !!
+            Join with Us & Let's have a SupeChat !!
           </Text>
 
           <Pressable
@@ -133,7 +135,7 @@ export default function App() {
               }
 
               let response = await fetch(
-                "https://235f-223-224-30-113.ngrok-free.app/Chanaka_Electronics_Chat/SignUp",
+                "https://cb63-112-134-139-205.ngrok-free.app/Chanaka_Electronics_Chat/SignUp",
                 {
                   method: "POST",
                   body: formData,
@@ -167,6 +169,7 @@ export default function App() {
     </ImageBackground>
   );
 }
+registerRootComponent(SignUp);
 
 const Stylesheet = StyleSheet.create({
   view1: {
@@ -255,7 +258,9 @@ const Stylesheet = StyleSheet.create({
     height: 100,
     borderRadius: 50,
     justifyContent: "center",
-    backgroundColor: "#007FFF",
+    borderStyle : "solid",
+    borderColor : "#007FFF",
+    borderWidth : 3,
     alignSelf: "center",
     marginTop: 5,
   },

@@ -54,10 +54,7 @@ function SignIn() {
           <Image source={MainImagePath} style={Stylesheet.mainimage} />
           <Text style={Stylesheet.text1}>Sign In</Text>
           <Text style={Stylesheet.text2}>
-            Welcome to Chanaka Electronics Chat Hub
-          </Text>
-          <Text style={Stylesheet.text3}>
-            Please Fill your Details to Continue
+            Let's Pretend like a real super Hero!!
           </Text>
 
           <View style={Stylesheet.avatar}>
@@ -74,7 +71,7 @@ function SignIn() {
             onEndEditing={async () => {
               if (getMobile.length == 10) {
                 let response = await fetch(
-                  "https://235f-223-224-30-113.ngrok-free.app/Chanaka_Electronics_Chat/GetName?mobile=" +
+                  "https://cb63-112-134-139-205.ngrok-free.app/Chanaka_Electronics_Chat/GetName?mobile=" +
                     getMobile
                 );
                 if (response.ok) {
@@ -98,35 +95,55 @@ function SignIn() {
           <Pressable
             style={Stylesheet.pressable1}
             onPress={async () => {
-              let formData = new FormData();
+              try {
+                let formData = new FormData();
 
-              formData.append("mobile", getMobile);
-              formData.append("password", getPassword);
+                formData.append("mobile", getMobile);
+                formData.append("password", getPassword);
 
-              let response = await fetch(
-                "https://235f-223-224-30-113.ngrok-free.app/Chanaka_Electronics_Chat/SignIn",
-                {
-                  method: "POST",
-                  body: formData,
-                }
-              );
-              if (response.ok) {
-                let json = await response.json();
-                if (json.success) {
-                  
-                  //user Registration Complete
-                  let user = json.user;
-                  Alert.alert(
-                    "Success",
-                    "Hi! " + user.first_name + ", " + json.message
-                  );
-
-                  try {
-                    await AsyncStorage.setItem("user", JSON.stringify(user));
-                  } catch (error) {}
+                let response = await fetch(
+                  "https://cb63-112-134-139-205.ngrok-free.app/Chanaka_Electronics_Chat/SignIn",
+                  {
+                    method: "POST",
+                    body: JSON.stringify({
+                      mobile: getMobile,
+                      password: getPassword,
+                    }),
+                    headers: {
+                      "Content-Type": "application/json</View>",
+                    },
+                  }
+                );
+                if (response.ok) {
+                  // Check if the response body has content before parsing
+                  let responseText = await response.text();
+                  if (responseText) {
+                    let json = JSON.parse(responseText);
+                    if (json.success) {
+                      let user = json.user;
+                      Alert.alert(
+                        "Success",
+                        "Hi! " + user.first_name + ", " + json.message
+                      );
+                      try {
+                        await AsyncStorage.setItem(
+                          "user",
+                          JSON.stringify(user)
+                        );
+                      } catch (error) {
+                        console.log(error);
+                      }
+                    } else {
+                      Alert.alert("Error", json.message);
+                    }
+                  } else {
+                    Alert.alert("Error", "Empty response from server");
+                  }
                 } else {
-                  Alert.alert("Error", json.message);
+                  Alert.alert("Error", `Response status: ${response.status}`);
                 }
+              } catch (error) {
+                Alert.alert("Error", "Failed to fetch: " + error.message);
               }
             }}
           >
@@ -186,7 +203,7 @@ const Stylesheet = StyleSheet.create({
   text5: {
     fontSize: 25,
     fontFamily: "Montserrat-Bold",
-    color: "#007FFF",
+    color: "white",
     alignSelf: "center",
     justifyContent: "center",
   },
@@ -245,7 +262,9 @@ const Stylesheet = StyleSheet.create({
     height: 50,
     borderRadius: 25,
     justifyContent: "center",
-    backgroundColor: "white",
+    borderStyle : "solid",
+    borderColor : "#007FFF",
+    borderWidth : 2,
     alignSelf: "center",
     marginTop: 5,
   },

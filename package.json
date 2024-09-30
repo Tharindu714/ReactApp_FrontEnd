@@ -1,7 +1,7 @@
 {
   "name": "myexpo_project_3",
   "version": "1.0.0",
-  "main": "./Home.js",
+  "main": "./SignUp.js",
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",

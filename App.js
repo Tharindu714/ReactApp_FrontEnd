@@ -6,15 +6,14 @@ import {
   Text,
   TextInput,
   StyleSheet,
-  Button,
+  Pressable,
   ImageBackground,
+  ScrollView,
+  Alert,
 } from "react-native";
-import { Pressable, ScrollView } from "react-native";
-import { Alert } from "react-native";
 import { Image } from "expo-image";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import * as ImagePicker from "expo-image-picker";
-import { registerRootComponent } from "expo";
 
 const MainImagePath = require("./assets/images/logo2.png");
 const backgroundImage = require("./assets/images/background.jpg");
@@ -134,7 +133,7 @@ export default function App() {
               }
 
               let response = await fetch(
-                "https://c9d4-112-134-136-247.ngrok-free.app/Chanaka_Electronics_Chat/SignUp",
+                "https://235f-223-224-30-113.ngrok-free.app/Chanaka_Electronics_Chat/SignUp",
                 {
                   method: "POST",
                   body: formData,

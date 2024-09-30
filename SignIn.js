@@ -7,13 +7,15 @@ import {
   TextInput,
   StyleSheet,
   ImageBackground,
+  Pressable,
+  ScrollView,
+  Alert,
 } from "react-native";
-import { Pressable, ScrollView } from "react-native";
-import { Alert } from "react-native";
-import { Image } from "react-native";
+import { Image } from "expo-image";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { registerRootComponent } from "expo";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
+import { AsyncStorage } from "@react-native-async-storage/async-storage";
 
 const MainImagePath = require("./assets/images/logo2.png");
 const backgroundImage = require("./assets/images/background.jpg");
@@ -72,7 +74,7 @@ function SignIn() {
             onEndEditing={async () => {
               if (getMobile.length == 10) {
                 let response = await fetch(
-                  "https://c9d4-112-134-136-247.ngrok-free.app/Chanaka_Electronics_Chat/GetName?mobile=" +
+                  "https://235f-223-224-30-113.ngrok-free.app/Chanaka_Electronics_Chat/GetName?mobile=" +
                     getMobile
                 );
                 if (response.ok) {
@@ -102,7 +104,7 @@ function SignIn() {
               formData.append("password", getPassword);
 
               let response = await fetch(
-                "https://c9d4-112-134-136-247.ngrok-free.app/Chanaka_Electronics_Chat/SignIn",
+                "https://235f-223-224-30-113.ngrok-free.app/Chanaka_Electronics_Chat/SignIn",
                 {
                   method: "POST",
                   body: formData,
@@ -111,8 +113,17 @@ function SignIn() {
               if (response.ok) {
                 let json = await response.json();
                 if (json.success) {
+                  
                   //user Registration Complete
-                  Alert.alert("Success", json.message);
+                  let user = json.user;
+                  Alert.alert(
+                    "Success",
+                    "Hi! " + user.first_name + ", " + json.message
+                  );
+
+                  try {
+                    await AsyncStorage.setItem("user", JSON.stringify(user));
+                  } catch (error) {}
                 } else {
                   Alert.alert("Error", json.message);
                 }
@@ -176,8 +187,8 @@ const Stylesheet = StyleSheet.create({
     fontSize: 25,
     fontFamily: "Montserrat-Bold",
     color: "#007FFF",
-    alignSelf:"center",
-    justifyContent: "center"
+    alignSelf: "center",
+    justifyContent: "center",
   },
 
   input1: {
@@ -239,3 +250,5 @@ const Stylesheet = StyleSheet.create({
     marginTop: 5,
   },
 });
+
+// ngrok http http://localhost:8080

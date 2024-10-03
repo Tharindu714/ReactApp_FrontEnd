@@ -38,7 +38,7 @@ export default function home() {
 
       let response = await fetch(
         "https://af6f-112-134-136-206.ngrok-free.app/SupeChat/LoadHomeData?id=" +
-          user.id
+        user.id
       );
       if (response.ok) {
         let json = await response.json();
@@ -70,7 +70,13 @@ export default function home() {
       <FlashList
         data={getChatArray}
         renderItem={({ item }) => (
-          <View style={Stylesheet.view5}>
+          <Pressable style={Stylesheet.view5} onPress={
+            () => {
+              // Alert.alert("View Chat", "User:" + item.other_user_id);
+              router.push("/chat");
+            }
+          }>
+
             <View
               style={
                 item.other_user_status == 1
@@ -111,13 +117,13 @@ export default function home() {
               <View style={Stylesheet.view7}>
                 <Text style={Stylesheet.text5}>{item.dateTime}</Text>
                 <FontAwesome6
-                  name={item.chat_status_id == 1 ? "check" : "check-double"}
+                  name={item.chat_status_id == 1 ? "check-double" : "check"}
                   size={18}
-                  color={item.chat_status_id == 1 ? "#007FFF" : "white"}
+                  color={item.chat_status_id == 2 ? "#007FFF" : "white"}
                 />
               </View>
             </View>
-          </View>
+          </Pressable>
         )}
         estimatedItemSize={200}
       />
@@ -128,7 +134,7 @@ export default function home() {
 const Stylesheet = StyleSheet.create({
   view1: {
     flex: 1,
-    paddingVertical: 50,
+    paddingVertical: 30,
     paddingHorizontal: 25,
   },
 
@@ -139,7 +145,7 @@ const Stylesheet = StyleSheet.create({
     borderStyle: "solid",
     borderWidth: 3,
     borderColor: "#007FFF",
-    justifyContent : "center"
+    justifyContent: "center"
   },
 
   view4: {
@@ -158,8 +164,8 @@ const Stylesheet = StyleSheet.create({
     borderRadius: 40,
     borderStyle: "solid",
     borderWidth: 3,
-    borderColor: "red",
-    justifyContent : "center"
+    borderColor: "#8B0000",
+    justifyContent: "center"
   },
 
   view7: {
@@ -184,7 +190,7 @@ const Stylesheet = StyleSheet.create({
   },
 
   offlineView: {
-    backgroundColor: "red",
+    backgroundColor: "#8B0000",
     width: 10,
     height: 10,
     borderRadius: 5,
@@ -227,7 +233,7 @@ const Stylesheet = StyleSheet.create({
     fontFamily: "Montserrat-Bold",
     color: "white",
     fontSize: 28,
-    alignItems : "center",
+    alignItems: "center",
     alignSelf: "center",
   },
 

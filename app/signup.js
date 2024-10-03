@@ -14,17 +14,18 @@ import {
 import { Image } from "expo-image";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import * as ImagePicker from "expo-image-picker";
-import { registerRootComponent } from "expo";
+// import { registerRootComponent } from "expo";
+import { StatusBar } from "expo-status-bar";
+import { router } from "expo-router";
 
-
-const MainImagePath = require("./assets/images/logo2.png");
-const backgroundImage = require("./assets/images/background.jpg");
-const addImage = require("./assets/images/camera.png");
+const MainImagePath = require("../assets/images/logo2.png");
+const backgroundImage = require("../assets/images/background.jpg");
+const addImage = require("../assets/images/camera.png");
 const blurhash = "L02FMz00=eyGLNmi%5Fy4,^TB=zm";
 
 SplashScreen.preventAutoHideAsync();
 
-function SignUp() {
+export default function signup() {
   const [getImage, setImage] = useState(null);
   const [getMobile, setMobile] = useState("");
   const [getFirstName, setFirstName] = useState("");
@@ -32,11 +33,11 @@ function SignUp() {
   const [getPassword, setPassword] = useState("");
 
   const [loaded, error] = useFonts({
-    "Montserrat-Bold": require("./assets/fonts/Montserrat-Bold.ttf"),
-    "Montserrat-Light": require("./assets/fonts/Montserrat-Light.ttf"),
-    "Montserrat-Medium": require("./assets/fonts/Montserrat-Medium.ttf"),
-    "Montserrat-Regular": require("./assets/fonts/Montserrat-Regular.ttf"),
-    "Montserrat-SemiBold": require("./assets/fonts/Montserrat-SemiBold.ttf"),
+    "Montserrat-Bold": require("../assets/fonts/Montserrat-Bold.ttf"),
+    "Montserrat-Light": require("../assets/fonts/Montserrat-Light.ttf"),
+    "Montserrat-Medium": require("../assets/fonts/Montserrat-Medium.ttf"),
+    "Montserrat-Regular": require("../assets/fonts/Montserrat-Regular.ttf"),
+    "Montserrat-SemiBold": require("../assets/fonts/Montserrat-SemiBold.ttf"),
   });
 
   useEffect(() => {
@@ -135,7 +136,7 @@ function SignUp() {
               }
 
               let response = await fetch(
-                "https://cb63-112-134-139-205.ngrok-free.app/Chanaka_Electronics_Chat/SignUp",
+                "https://af6f-112-134-136-206.ngrok-free.app/SupeChat/SignUp",
                 {
                   method: "POST",
                   body: formData,
@@ -145,7 +146,8 @@ function SignUp() {
                 let json = await response.json();
                 if (json.success) {
                   //user Registration Complete
-                  Alert.alert("Success", json.message);
+                  // Alert.alert("Success", json.message);
+                  router.replace("/");
                 } else {
                   Alert.alert("Error", json.message);
                 }
@@ -159,17 +161,19 @@ function SignUp() {
           <Pressable
             style={Stylesheet.pressable2}
             onPress={() => {
-              Alert.alert("Testing", "SignIn");
+              // Alert.alert("Testing", "SignIn");
+              router.replace("/");
             }}
           >
             <Text style={Stylesheet.text3}>Already a Member? Sign In</Text>
           </Pressable>
         </View>
       </ScrollView>
+      <StatusBar style="dark" hidden />
     </ImageBackground>
   );
 }
-registerRootComponent(SignUp);
+// registerRootComponent(SignUp);
 
 const Stylesheet = StyleSheet.create({
   view1: {

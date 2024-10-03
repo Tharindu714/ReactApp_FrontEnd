@@ -4,8 +4,9 @@
     "slug": "MyExpo_project_3",
     "version": "1.0.0",
     "orientation": "portrait",
+    "scheme": "expo-project-3",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "dark",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "cover",
@@ -24,7 +25,8 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-font"
+      "expo-font",
+      "expo-router"
     ]
   }
 }

@@ -12,27 +12,44 @@ import {
   Alert,
 } from "react-native";
 import { Image } from "expo-image";
+import { StatusBar } from "expo-status-bar";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { registerRootComponent } from "expo";
+// import { registerRootComponent } from "expo";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import { AsyncStorage } from "@react-native-async-storage/async-storage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { router } from "expo-router";
 
-const MainImagePath = require("./assets/images/logo2.png");
-const backgroundImage = require("./assets/images/background.jpg");
+const MainImagePath = require("../assets/images/logo2.png");
+const backgroundImage = require("../assets/images/background.jpg");
 
 SplashScreen.preventAutoHideAsync();
 
-function SignIn() {
+export default function index() {
   const [getName, setName] = useState(null);
   const [getMobile, setMobile] = useState("");
   const [getPassword, setPassword] = useState("");
   const [loaded, error] = useFonts({
-    "Montserrat-Bold": require("./assets/fonts/Montserrat-Bold.ttf"),
-    "Montserrat-Light": require("./assets/fonts/Montserrat-Light.ttf"),
-    "Montserrat-Medium": require("./assets/fonts/Montserrat-Medium.ttf"),
-    "Montserrat-Regular": require("./assets/fonts/Montserrat-Regular.ttf"),
-    "Montserrat-SemiBold": require("./assets/fonts/Montserrat-SemiBold.ttf"),
+    "Montserrat-Bold": require("../assets/fonts/Montserrat-Bold.ttf"),
+    "Montserrat-Light": require("../assets/fonts/Montserrat-Light.ttf"),
+    "Montserrat-Medium": require("../assets/fonts/Montserrat-Medium.ttf"),
+    "Montserrat-Regular": require("../assets/fonts/Montserrat-Regular.ttf"),
+    "Montserrat-SemiBold": require("../assets/fonts/Montserrat-SemiBold.ttf"),
   });
+
+  useEffect(() => {
+    async function CheckUser() {
+      try {
+        let userJson = await AsyncStorage.getItem("user");
+        if (userJson != null) {
+          router.replace("/home");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    CheckUser();
+  }, []
+  );
 
   useEffect(() => {
     if (loaded || error) {
@@ -71,8 +88,8 @@ function SignIn() {
             onEndEditing={async () => {
               if (getMobile.length == 10) {
                 let response = await fetch(
-                  "https://cb63-112-134-139-205.ngrok-free.app/Chanaka_Electronics_Chat/GetName?mobile=" +
-                    getMobile
+                  "https://af6f-112-134-136-206.ngrok-free.app/SupeChat/GetName?mobile=" +
+                  getMobile
                 );
                 if (response.ok) {
                   let json = await response.json();
@@ -102,7 +119,7 @@ function SignIn() {
                 formData.append("password", getPassword);
 
                 let response = await fetch(
-                  "https://cb63-112-134-139-205.ngrok-free.app/Chanaka_Electronics_Chat/SignIn",
+                  "https://af6f-112-134-136-206.ngrok-free.app/SupeChat/SignIn",
                   {
                     method: "POST",
                     body: JSON.stringify({
@@ -110,7 +127,7 @@ function SignIn() {
                       password: getPassword,
                     }),
                     headers: {
-                      "Content-Type": "application/json</View>",
+                      "Content-Type": "application/json",
                     },
                   }
                 );
@@ -121,15 +138,13 @@ function SignIn() {
                     let json = JSON.parse(responseText);
                     if (json.success) {
                       let user = json.user;
-                      Alert.alert(
-                        "Success",
-                        "Hi! " + user.first_name + ", " + json.message
-                      );
+
                       try {
                         await AsyncStorage.setItem(
                           "user",
                           JSON.stringify(user)
                         );
+                        router.replace("/home");
                       } catch (error) {
                         console.log(error);
                       }
@@ -154,18 +169,20 @@ function SignIn() {
           <Pressable
             style={Stylesheet.pressable2}
             onPress={() => {
-              Alert.alert("Testing", "SignUp");
+              // Alert.alert("Testing", "SignUp");
+              router.replace("/signup");
             }}
           >
             <Text style={Stylesheet.text3}>New Member? Create an Account</Text>
           </Pressable>
         </View>
       </ScrollView>
+      <StatusBar style="dark" hidden />
     </ImageBackground>
   );
 }
 
-registerRootComponent(SignIn);
+// registerRootComponent(SignIn);
 
 const Stylesheet = StyleSheet.create({
   view1: {
@@ -262,9 +279,9 @@ const Stylesheet = StyleSheet.create({
     height: 50,
     borderRadius: 25,
     justifyContent: "center",
-    borderStyle : "solid",
-    borderColor : "#007FFF",
-    borderWidth : 2,
+    borderStyle: "solid",
+    borderColor: "#007FFF",
+    borderWidth: 2,
     alignSelf: "center",
     marginTop: 5,
   },

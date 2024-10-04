@@ -11,7 +11,7 @@ import {
   Alert,
 } from "react-native";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FlashList } from "@shopify/flash-list";
 import { Image } from "expo-image";
@@ -21,6 +21,7 @@ const backgroundImage = require("../assets/images/BlurBackground.jpg");
 SplashScreen.preventAutoHideAsync();
 
 export default function home() {
+
   const [getChatArray, setChatArray] = useState([]);
 
   const [loaded, error] = useFonts({
@@ -37,7 +38,7 @@ export default function home() {
       let user = JSON.parse(userJson);
 
       let response = await fetch(
-        "https://af6f-112-134-136-206.ngrok-free.app/SupeChat/LoadHomeData?id=" +
+        "https://9ac3-112-134-136-206.ngrok-free.app/SupeChat/LoadHomeData?id=" +
         user.id
       );
       if (response.ok) {
@@ -73,7 +74,12 @@ export default function home() {
           <Pressable style={Stylesheet.view5} onPress={
             () => {
               // Alert.alert("View Chat", "User:" + item.other_user_id);
-              router.push("/chat");
+              router.push(
+                {
+                  pathname : "/chat",
+                  params: item
+                }
+              );
             }
           }>
 
@@ -87,7 +93,7 @@ export default function home() {
               {item.avater_image_found ? (
                 <Image
                   source={
-                    "https://af6f-112-134-136-206.ngrok-free.app/SupeChat/Avater/" +
+                    "https://9ac3-112-134-136-206.ngrok-free.app/SupeChat/Avater/" +
                     item.Imgname +
                     "_image.png"
                   }

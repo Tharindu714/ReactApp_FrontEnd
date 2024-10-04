@@ -88,7 +88,7 @@ export default function index() {
             onEndEditing={async () => {
               if (getMobile.length == 10) {
                 let response = await fetch(
-                  "https://af6f-112-134-136-206.ngrok-free.app/SupeChat/GetName?mobile=" +
+                  "https://9ac3-112-134-136-206.ngrok-free.app/SupeChat/GetName?mobile=" +
                   getMobile
                 );
                 if (response.ok) {
@@ -119,7 +119,7 @@ export default function index() {
                 formData.append("password", getPassword);
 
                 let response = await fetch(
-                  "https://af6f-112-134-136-206.ngrok-free.app/SupeChat/SignIn",
+                  "https://9ac3-112-134-136-206.ngrok-free.app/SupeChat/SignIn",
                   {
                     method: "POST",
                     body: JSON.stringify({

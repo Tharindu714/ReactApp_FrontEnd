@@ -136,7 +136,7 @@ export default function signup() {
               }
 
               let response = await fetch(
-                "https://af6f-112-134-136-206.ngrok-free.app/SupeChat/SignUp",
+                "https://9ac3-112-134-136-206.ngrok-free.app/SupeChat/SignUp",
                 {
                   method: "POST",
                   body: formData,
